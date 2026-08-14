@@ -5,6 +5,7 @@ import {
   backupSettings,
   backupVersions,
   managedFiles,
+  syncDevices,
   users,
 } from "../drizzle/schema";
 import { getDb } from "./db";
@@ -103,8 +104,9 @@ export async function createBackupVersion(input: {
   encryptionAlgorithm: string;
   initializationVector: string;
   authenticationTag: string;
-  sourceOperation: "backup" | "restore" | "scheduled";
+  sourceOperation: "backup" | "restore" | "scheduled" | "device";
   restoredFromVersionId?: number;
+  syncDeviceId?: number;
 }) {
   const db = await requireDb();
   await db.insert(backupVersions).values(input);
@@ -137,6 +139,16 @@ export async function getVersionForUser(versionId: number, userId: number) {
     .select()
     .from(backupVersions)
     .where(and(eq(backupVersions.id, versionId), eq(backupVersions.userId, userId)))
+    .limit(1);
+  return version;
+}
+
+export async function getVersionForDevice(versionId: number, deviceId: number) {
+  const db = await requireDb();
+  const [version] = await db
+    .select()
+    .from(backupVersions)
+    .where(and(eq(backupVersions.id, versionId), eq(backupVersions.syncDeviceId, deviceId)))
     .limit(1);
   return version;
 }
@@ -317,4 +329,45 @@ export async function updateBackupSettings(input: {
     await db.insert(backupSettings).values(input);
   }
   return getBackupSettings();
+}
+
+export async function createSyncDevice(input: {
+  userId: number;
+  name: string;
+  tokenHash: string;
+  wrappedKeyCiphertext: string;
+  wrappedKeyInitializationVector: string;
+  wrappedKeyAuthenticationTag: string;
+}) {
+  const db = await requireDb();
+  const result = await db.insert(syncDevices).values(input);
+  const id = Number(result[0].insertId);
+  const [device] = await db.select().from(syncDevices).where(eq(syncDevices.id, id)).limit(1);
+  if (!device) throw new Error("Failed to create the local companion device.");
+  return device;
+}
+
+export async function getSyncDeviceByTokenHash(tokenHash: string) {
+  const db = await requireDb();
+  const [device] = await db.select().from(syncDevices).where(eq(syncDevices.tokenHash, tokenHash)).limit(1);
+  return device;
+}
+
+export async function listSyncDevicesForUser(userId: number) {
+  const db = await requireDb();
+  return db
+    .select({ id: syncDevices.id, name: syncDevices.name, lastSyncedAt: syncDevices.lastSyncedAt, createdAt: syncDevices.createdAt })
+    .from(syncDevices)
+    .where(eq(syncDevices.userId, userId))
+    .orderBy(desc(syncDevices.updatedAt));
+}
+
+export async function markSyncDeviceActive(deviceId: number) {
+  const db = await requireDb();
+  await db.update(syncDevices).set({ lastSyncedAt: new Date() }).where(eq(syncDevices.id, deviceId));
+}
+
+export async function revokeSyncDeviceForUser(deviceId: number, userId: number) {
+  const db = await requireDb();
+  await db.delete(syncDevices).where(and(eq(syncDevices.id, deviceId), eq(syncDevices.userId, userId)));
 }

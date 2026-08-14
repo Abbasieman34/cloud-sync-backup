@@ -107,6 +107,9 @@ export async function createUserBackup(input: {
 export async function restoreVersion(userId: number, versionId: number) {
   const source = await backupDb.getVersionForUser(versionId, userId);
   if (!source) throw new Error("The selected backup version was not found.");
+  if (source.encryptionAlgorithm === "aes-256-gcm-client") {
+    throw new Error("This local-companion version must be restored by its paired local client, which holds the device encryption key.");
+  }
   const file = await backupDb.getFileForUser(source.fileId, userId);
   if (!file) throw new Error("The managed file for this version was not found.");
 
@@ -161,6 +164,9 @@ export async function createScheduledBackup(scheduleId: number, userId: number, 
 export async function downloadDecryptedVersion(userId: number, versionId: number) {
   const version = await backupDb.getVersionForUser(versionId, userId);
   if (!version) throw new Error("The selected backup version was not found.");
+  if (version.encryptionAlgorithm === "aes-256-gcm-client") {
+    throw new Error("This local-companion version can only be downloaded and decrypted by its paired local client.");
+  }
   const file = await backupDb.getFileForUser(version.fileId, userId);
   if (!file) throw new Error("The managed file for this version was not found.");
   const content = await readVersionContent(version);

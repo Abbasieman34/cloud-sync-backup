@@ -7,6 +7,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ActivityPage from "./pages/Activity";
 import AdminPage from "./pages/Admin";
+import CompanionPage from "./pages/Companion";
 import FilesPage from "./pages/Files";
 import Home from "./pages/Home";
 import SchedulesPage from "./pages/Schedules";
@@ -22,6 +23,7 @@ function Router() {
       <Route path={"/"}><ProtectedPage><Home /></ProtectedPage></Route>
       <Route path={"/files"}><ProtectedPage><FilesPage /></ProtectedPage></Route>
       <Route path={"/schedules"}><ProtectedPage><SchedulesPage /></ProtectedPage></Route>
+      <Route path={"/companion"}><ProtectedPage><CompanionPage /></ProtectedPage></Route>
       <Route path={"/activity"}><ProtectedPage><ActivityPage /></ProtectedPage></Route>
       <Route path={"/admin"}><ProtectedPage><AdminPage /></ProtectedPage></Route>
       <Route path={"/404"} component={NotFound} />

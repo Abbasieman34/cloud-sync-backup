@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { Activity, CalendarClock, DatabaseBackup, Files, LayoutDashboard, LogOut, PanelLeft, Settings2, ShieldCheck } from "lucide-react";
+import { Activity, CalendarClock, Files, Laptop, LayoutDashboard, LogOut, PanelLeft, Settings2, ShieldCheck } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -31,6 +31,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Overview", path: "/" },
   { icon: Files, label: "Files", path: "/files" },
   { icon: CalendarClock, label: "Schedules", path: "/schedules" },
+  { icon: Laptop, label: "Local sync", path: "/companion" },
   { icon: Activity, label: "Activity", path: "/activity" },
 ];
 

@@ -22,6 +22,10 @@ export function verifyBackupEncryptionConfiguration(): { algorithm: string; keyL
 }
 
 export function encryptBackup(data: Buffer): EncryptedBackupPayload {
+  return encryptWithBackupKey(data);
+}
+
+export function encryptWithBackupKey(data: Buffer): EncryptedBackupPayload {
   const initializationVector = randomBytes(12);
   const cipher = createCipheriv(BACKUP_ENCRYPTION_ALGORITHM, getBackupEncryptionKey(), initializationVector);
   const ciphertext = Buffer.concat([cipher.update(data), cipher.final()]);
@@ -34,6 +38,10 @@ export function encryptBackup(data: Buffer): EncryptedBackupPayload {
 }
 
 export function decryptBackup(payload: EncryptedBackupPayload): Buffer {
+  return decryptWithBackupKey(payload);
+}
+
+export function decryptWithBackupKey(payload: EncryptedBackupPayload): Buffer {
   const decipher = createDecipheriv(
     BACKUP_ENCRYPTION_ALGORITHM,
     getBackupEncryptionKey(),

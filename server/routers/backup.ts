@@ -6,6 +6,7 @@ import { adminProcedure, protectedProcedure, router } from "../_core/trpc";
 import { verifyBackupEncryptionConfiguration } from "../backupCrypto";
 import * as backupDb from "../backupDb";
 import { createUserBackup, downloadDecryptedVersion, restoreVersion } from "../backupService";
+import { createCompanionDevice } from "../companionService";
 
 const cronExpression = z.string().trim().refine(
   value => {
@@ -100,6 +101,15 @@ export const backupRouter = router({
     }),
   dashboard: protectedProcedure.query(({ ctx }) => backupDb.getDashboardMetrics(ctx.user.id)),
   activity: protectedProcedure.query(({ ctx }) => backupDb.listActivityForUser(ctx.user.id)),
+  companion: router({
+    listDevices: protectedProcedure.query(({ ctx }) => backupDb.listSyncDevicesForUser(ctx.user.id)),
+    createDevice: protectedProcedure
+      .input(z.object({ name: z.string().trim().min(1).max(120) }))
+      .mutation(({ ctx, input }) => createCompanionDevice(ctx.user.id, input.name)),
+    revokeDevice: protectedProcedure
+      .input(z.object({ deviceId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => { await backupDb.revokeSyncDeviceForUser(input.deviceId, ctx.user.id); return { success: true } as const; }),
+  }),
   admin: router({
     users: adminProcedure.query(() => backupDb.listStorageByUser()),
     settings: adminProcedure.query(() => backupDb.getBackupSettings()),

@@ -7,6 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { scheduledBackupHandler } from "../scheduledBackupHandler";
+import { companionDownloadHandler, companionSyncHandler } from "../companionHandler";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 
@@ -38,6 +39,8 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   app.post("/api/scheduled/backup", scheduledBackupHandler);
+  app.post("/api/companion/sync", companionSyncHandler);
+  app.post("/api/companion/download", companionDownloadHandler);
   // tRPC API
   app.use(
     "/api/trpc",

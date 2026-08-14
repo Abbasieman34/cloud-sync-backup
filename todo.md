@@ -14,5 +14,10 @@
 - [ ] Perform authenticated visual QA on the dashboard, files, schedules, activity, and owner administration screens; refine the interface where needed.
 - [x] Add and run automated tests for backup lifecycle, version restoration, scheduled execution, and administration rules.
 - [ ] Save the final project checkpoint after authenticated visual validation.
-- [ ] Implement a separate local-folder synchronization companion client after the web platform is complete.
+- [x] Implement a separate local-folder synchronization companion client after the web platform is complete.
 - [x] Implement polished custom in-app notifications for backup, synchronization, restore, schedule, and settings outcomes.
+- [ ] Verify the connected GitHub repository and prepare an appropriate hosting handoff for this full-stack platform.
+- [x] Build the local-folder companion client with folder selection, change detection, encrypted transfer, synchronization status, and web-platform authentication.
+- [x] Add a concrete local folder-selection flow to the companion client so setup does not require manual JSON placeholder editing.
+- [x] Add automated coverage for paired-companion restore/download and revoked-device authentication failure behavior.
+- [x] Update the pairing workflow and companion documentation for the finalized folder-selection setup.

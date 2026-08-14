@@ -58,6 +58,27 @@ export const managedFiles = mysqlTable(
   })
 );
 
+/** A paired local companion client. Its device key is encrypted by the server master key before database storage. */
+export const syncDevices = mysqlTable(
+  "sync_devices",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+    name: varchar("name", { length: 120 }).notNull(),
+    tokenHash: varchar("tokenHash", { length: 64 }).notNull(),
+    wrappedKeyCiphertext: text("wrappedKeyCiphertext").notNull(),
+    wrappedKeyInitializationVector: text("wrappedKeyInitializationVector").notNull(),
+    wrappedKeyAuthenticationTag: text("wrappedKeyAuthenticationTag").notNull(),
+    lastSyncedAt: timestamp("lastSyncedAt"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => ({
+    tokenUnique: uniqueIndex("sync_devices_token_hash_unique").on(table.tokenHash),
+    userIndex: index("sync_devices_user_idx").on(table.userId),
+  })
+);
+
 /** Immutable encrypted snapshot metadata for each backup and restore operation. */
 export const backupVersions = mysqlTable(
   "backup_versions",
@@ -65,6 +86,7 @@ export const backupVersions = mysqlTable(
     id: int("id").autoincrement().primaryKey(),
     fileId: int("fileId").notNull().references(() => managedFiles.id, { onDelete: "cascade" }),
     userId: int("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+    syncDeviceId: int("syncDeviceId").references(() => syncDevices.id, { onDelete: "set null" }),
     versionNumber: int("versionNumber").notNull(),
     storageKey: varchar("storageKey", { length: 1024 }).notNull(),
     byteSize: bigint("byteSize", { mode: "number" }).notNull(),
@@ -72,7 +94,7 @@ export const backupVersions = mysqlTable(
     encryptionAlgorithm: varchar("encryptionAlgorithm", { length: 64 }).notNull(),
     initializationVector: text("initializationVector").notNull(),
     authenticationTag: text("authenticationTag").notNull(),
-    sourceOperation: mysqlEnum("sourceOperation", ["backup", "restore", "scheduled"]).notNull(),
+    sourceOperation: mysqlEnum("sourceOperation", ["backup", "restore", "scheduled", "device"]).notNull(),
     restoredFromVersionId: int("restoredFromVersionId"),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
   },
@@ -136,3 +158,4 @@ export type BackupVersion = typeof backupVersions.$inferSelect;
 export type BackupSchedule = typeof backupSchedules.$inferSelect;
 export type ActivityLog = typeof activityLogs.$inferSelect;
 export type BackupSetting = typeof backupSettings.$inferSelect;
+export type SyncDevice = typeof syncDevices.$inferSelect;
