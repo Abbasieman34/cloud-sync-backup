@@ -155,7 +155,7 @@ function DashboardLayoutContent({
       <div className="relative" ref={sidebarRef}>
         <Sidebar
           collapsible="icon"
-          className="border-r-0"
+          className="border-r-0 bg-[#fbfcfe]"
           disableTransition={isResizing}
         >
           <SidebarHeader className="h-16 justify-center">
@@ -168,8 +168,9 @@ function DashboardLayoutContent({
                 <PanelLeft className="h-4 w-4 text-muted-foreground" />
               </button>
               {!isCollapsed ? (
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate text-[#14213d]">Vaultline</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="relative grid h-7 w-7 place-items-center overflow-hidden rounded-[9px] bg-[#14213d] shadow-[0_5px_14px_rgba(20,33,61,0.18)]"><div className="absolute inset-x-0 top-0 h-px bg-[#7ec0ff]/80" /><ShieldCheck className="h-3.5 w-3.5 text-[#d3e9ff]" /></div>
+                  <div className="min-w-0"><span className="block font-semibold tracking-[-0.03em] truncate text-[#14213d]">Vaultline</span><span className="block text-[8px] font-bold tracking-[0.16em] text-[#7291b9] uppercase">Secure storage</span></div>
                 </div>
               ) : null}
             </div>

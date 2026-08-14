@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-7">
-      <section className="relative overflow-hidden rounded-[28px] bg-[#14213d] px-6 py-7 text-white shadow-[0_20px_60px_rgba(20,33,61,0.16)] md:px-9 md:py-9">
+      <section className="vault-grid relative overflow-hidden rounded-[28px] bg-[#14213d] px-6 py-7 text-white shadow-[0_20px_60px_rgba(20,33,61,0.16)] md:px-9 md:py-9">
         <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#4b9cff]/20 blur-3xl" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl"><div className="mb-3 flex items-center gap-2 text-xs font-semibold tracking-[0.13em] text-[#a8c8ef] uppercase"><ShieldCheck className="h-4 w-4" /> Secure workspace</div><h1 className="text-3xl font-semibold tracking-[-0.035em] md:text-4xl">Good to see you, {user?.name?.split(" ")[0] || "there"}.</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[#bfd0e9]">Your web-managed files are encrypted before storage, versioned on every backup, and tracked in a complete operational trail.</p></div>

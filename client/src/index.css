@@ -120,6 +120,8 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv02", "cv05";
+    background-image: radial-gradient(circle at 16% 0%, oklch(0.93 0.025 248 / 55%), transparent 28rem), linear-gradient(to bottom, oklch(0.992 0.003 250), oklch(0.98 0.005 248));
+    background-attachment: fixed;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -159,6 +161,11 @@
   .flex {
     min-height: 0;
     min-width: 0;
+  }
+
+  .vault-grid {
+    background-image: linear-gradient(oklch(0.92 0.04 248 / 7%) 1px, transparent 1px), linear-gradient(90deg, oklch(0.92 0.04 248 / 7%) 1px, transparent 1px), radial-gradient(circle at 88% 18%, oklch(0.66 0.13 245 / 24%), transparent 18rem);
+    background-size: 30px 30px, 30px 30px, auto;
   }
 
   @media (min-width: 640px) {
