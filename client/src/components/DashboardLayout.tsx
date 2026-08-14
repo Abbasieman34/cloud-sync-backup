@@ -21,15 +21,17 @@ import {
 } from "@/components/ui/sidebar";
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { Activity, CalendarClock, DatabaseBackup, Files, LayoutDashboard, LogOut, PanelLeft, Settings2, ShieldCheck } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "Overview", path: "/" },
+  { icon: Files, label: "Files", path: "/files" },
+  { icon: CalendarClock, label: "Schedules", path: "/schedules" },
+  { icon: Activity, label: "Activity", path: "/activity" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
@@ -58,23 +60,19 @@ export default function DashboardLayout({
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
-          <div className="flex flex-col items-center gap-6">
-            <h1 className="text-2xl font-semibold tracking-tight text-center">
-              Sign in to continue
-            </h1>
-            <p className="text-sm text-muted-foreground text-center max-w-sm">
-              Access to this dashboard requires authentication. Continue to launch the login flow.
-            </p>
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f7f9fc] p-6">
+        <div className="absolute inset-x-0 top-0 h-80 bg-[#14213d]" />
+        <div className="absolute -top-20 right-[12%] h-72 w-72 rounded-full bg-[#4f9eff]/20 blur-3xl" />
+        <div className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_24px_80px_rgba(20,33,61,0.2)]">
+          <div className="bg-[#14213d] px-8 pb-7 pt-8 text-white">
+            <div className="flex items-center gap-3"><div className="rounded-xl bg-white/10 p-2.5"><ShieldCheck className="h-5 w-5 text-[#b9d9ff]" /></div><div><p className="font-semibold tracking-[-0.02em]">Vaultline</p><p className="mt-0.5 text-xs text-[#a5c4e8]">Cloud backup and sync</p></div></div>
           </div>
-          <Button
-            onClick={() => startLogin()}
-            size="lg"
-            className="w-full shadow-lg hover:shadow-xl transition-all"
-          >
-            Sign in
-          </Button>
+          <div className="p-8">
+            <h1 className="text-2xl font-semibold tracking-[-0.03em] text-[#1d2939]">Your encrypted workspace awaits.</h1>
+            <p className="mt-3 text-sm leading-6 text-[#778499]">Sign in to access your managed files, encrypted backup versions, schedules, and audit trail.</p>
+            <Button onClick={() => startLogin()} size="lg" className="mt-7 w-full bg-[#1f63ab] shadow-[0_12px_25px_rgba(31,99,171,0.22)] hover:bg-[#174e89]">Sign in securely</Button>
+            <p className="mt-5 text-center text-xs text-[#94a0b1]">Protected access for authorized workspace users.</p>
+          </div>
         </div>
       </div>
     );
@@ -110,7 +108,9 @@ function DashboardLayoutContent({
   const isCollapsed = state === "collapsed";
   const [isResizing, setIsResizing] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const activeMenuItem = menuItems.find(item => item.path === location);
+  const isAdmin = user?.role === "admin";
+  const allMenuItems = isAdmin ? [...menuItems, { icon: Settings2, label: "Administration", path: "/admin" }] : menuItems;
+  const activeMenuItem = allMenuItems.find(item => item.path === location);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -168,9 +168,7 @@ function DashboardLayoutContent({
               </button>
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold tracking-tight truncate">
-                    Navigation
-                  </span>
+                  <span className="font-semibold tracking-tight truncate text-[#14213d]">Vaultline</span>
                 </div>
               ) : null}
             </div>
@@ -178,7 +176,10 @@ function DashboardLayoutContent({
 
           <SidebarContent className="gap-0">
             <SidebarMenu className="px-2 py-1">
-              {menuItems.map(item => {
+              <div className="px-3 pb-3 pt-2 group-data-[collapsible=icon]:hidden">
+                <p className="text-[10px] font-bold tracking-[0.14em] text-[#8a94a6] uppercase">Workspace</p>
+              </div>
+              {allMenuItems.map(item => {
                 const isActive = location === item.path;
                 return (
                   <SidebarMenuItem key={item.path}>
@@ -186,10 +187,10 @@ function DashboardLayoutContent({
                       isActive={isActive}
                       onClick={() => setLocation(item.path)}
                       tooltip={item.label}
-                      className={`h-10 transition-all font-normal`}
+                      className={`h-11 transition-all font-medium ${isActive ? "bg-[#e7f0fb] text-[#153e75]" : "text-[#5c6b82] hover:bg-[#f5f7fa]"}`}
                     >
                       <item.icon
-                        className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
+                        className={`h-4 w-4 ${isActive ? "text-[#1d5ba8]" : ""}`}
                       />
                       <span>{item.label}</span>
                     </SidebarMenuButton>
@@ -202,18 +203,18 @@ function DashboardLayoutContent({
           <SidebarFooter className="p-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-3 rounded-lg px-1 py-1 hover:bg-accent/50 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  <Avatar className="h-9 w-9 border shrink-0">
+                <button className="flex items-center gap-3 rounded-xl px-1 py-1 hover:bg-accent/50 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <Avatar className="h-9 w-9 border border-[#d7deea] shrink-0">
                     <AvatarFallback className="text-xs font-medium">
                       {user?.name?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
                     <p className="text-sm font-medium truncate leading-none">
-                      {user?.name || "-"}
+                      {user?.name || "Account"}
                     </p>
                     <p className="text-xs text-muted-foreground truncate mt-1.5">
-                      {user?.email || "-"}
+                      {isAdmin ? "Owner access" : user?.email || "Account"}
                     </p>
                   </div>
                 </button>
@@ -255,7 +256,7 @@ function DashboardLayoutContent({
             </div>
           </div>
         )}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1 p-4 md:p-7">{children}</main>
       </SidebarInset>
     </>
   );
