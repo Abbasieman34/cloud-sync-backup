@@ -1,0 +1,10 @@
+{
+  "name": "Vaultline",
+  "short_name": "Vaultline",
+  "description": "A local-first encrypted backup workspace.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0d1726",
+  "icons": []
+}

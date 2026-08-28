@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0d1726" />
+    <meta
+      name="description"
+      content="Vaultline is a local-first encrypted backup workspace that runs entirely in your browser."
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Vaultline · Encrypted backup workspace</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" role="img">
+              <path d="M16 3.5 26.5 8v7.8c0 6.3-4.1 10.8-10.5 12.7C10.1 26.6 6 22.1 6 15.8V8L16 3.5Z" fill="none" stroke="currentColor" stroke-width="2.2"/>
+              <path d="m11.4 16.3 3.1 3.1 6.3-6.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"/>
+            </svg>
+          </div>
+          <div>
+            <strong>vaultline</strong>
+            <span>private by design</span>
+          </div>
+        </div>
+
+        <div class="workspace-switcher">
+          <div class="workspace-avatar">A</div>
+          <div class="workspace-copy">
+            <strong>Abasi workspace</strong>
+            <span>Personal vault</span>
+          </div>
+          <span class="chevron" aria-hidden="true">⌄</span>
+        </div>
+
+        <p class="nav-label">Workspace</p>
+        <nav class="primary-nav">
+          <button class="nav-item is-active" data-nav="overview"><span class="nav-icon">⌂</span><span>Overview</span></button>
+          <button class="nav-item" data-nav="files"><span class="nav-icon">▣</span><span>Files</span><span class="nav-count" id="files-count">4</span></button>
+          <button class="nav-item" data-nav="schedules"><span class="nav-icon">◷</span><span>Schedules</span></button>
+          <button class="nav-item" data-nav="companion"><span class="nav-icon">⌁</span><span>Local sync</span><span class="status-dot"></span></button>
+          <button class="nav-item" data-nav="activity"><span class="nav-icon">≋</span><span>Activity</span></button>
+        </nav>
+
+        <p class="nav-label nav-label-spaced">Manage</p>
+        <nav class="primary-nav">
+          <button class="nav-item" data-nav="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="demo-note">
+            <span class="demo-note-icon">✦</span>
+            <div><strong>GitHub Pages demo</strong><span>Your data stays in this browser.</span></div>
+          </div>
+          <button class="profile-button" data-nav="settings">
+            <span class="profile-avatar">A</span>
+            <span class="profile-copy"><strong>Abasieman34</strong><span>Local account</span></span>
+            <span class="more-dots">•••</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="mobile-backdrop" id="mobile-backdrop"></div>
+      <main class="main-content" id="main-content">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="icon-button menu-button" id="menu-toggle" aria-label="Open navigation">☰</button>
+            <div class="breadcrumbs"><span>Vaultline</span><span>/</span><strong id="breadcrumb-title">Overview</strong></div>
+          </div>
+          <div class="topbar-actions">
+            <label class="global-search">
+              <span aria-hidden="true">⌕</span>
+              <input id="global-search" type="search" placeholder="Search your vault" autocomplete="off" />
+              <kbd>⌘ K</kbd>
+            </label>
+            <button class="icon-button" data-action="notifications" aria-label="Notifications"><span class="notification-icon">♢</span><i></i></button>
+            <button class="avatar-button" data-nav="settings" aria-label="Open settings">A</button>
+          </div>
+        </header>
+
+        <section class="page-frame" id="app" aria-live="polite"></section>
+
+        <footer class="page-footer">
+          <span><span class="footer-pulse"></span> All systems nominal</span>
+          <span>Vaultline demo · Runs locally in your browser</span>
+        </footer>
+      </main>
+    </div>
+
+    <input id="file-picker" class="visually-hidden" type="file" multiple />
+    <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+    <div id="modal-root"></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
